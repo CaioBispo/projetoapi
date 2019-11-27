@@ -12,11 +12,11 @@
 */
 
 $router->group(['prefix' => '/api'], function() use ($router){
-    $router->get('/{cidade}', 'ApiController@getByCity');
+    $router->post('/{cidade}', 'ApiController@getByCity');
     $router->get('/', 'ApiController@getAll');
     $router->delete('/{id}', 'ApiController@destroy');
 });
 
 $router->get('/', function () use ($router) {
-   return 'teste';
+   return phpinfo();
 });
