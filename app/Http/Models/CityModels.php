@@ -16,6 +16,12 @@ class CityModels extends Model
     protected $table = 'city';
 
     protected $fillable = [
-        'name'
+        'name',
+        'wind',
+        'temp',
+        'rain',
+        'time',
+        'cloud'
     ];
 }
+

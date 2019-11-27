@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Http\Service\CityServiceInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -11,8 +12,14 @@ class AppServiceProvider extends ServiceProvider
      *
      * @return void
      */
-    public function register()
-    {
-        //
+    public function register(){
+        $this->app->bind(
+            'App\Http\Service\CityServiceInterface',
+            'App\Http\Service\CityService');
+
+        $this->app->bind(
+            'App\Http\Repository\CityRepositoryInterface',
+            'App\Http\Repository\CityRepository');
+
     }
 }

@@ -8,31 +8,54 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Service\CityServiceInterface;
+use Illuminate\Http\Response;
 use Laravel\Lumen\Routing\Controller as BaseController;
+use mysql_xdevapi\Exception;
 
-define("URL", "http://api.openweathermap.org/data/2.5/forecast?i=");
-define('LANGUAGE','lang=pt');
-define('UNIT',',br&units=metric');
-define('RETURN_TYPE','&mode=json');
-define('API_ID','&appid=56c03479866487fa794a1047fbb8a684');
 class ApiController extends BaseController
 {
 
-    public function __construct(){}
+    private $cityService;
 
-    public function getByCity(string $city){
+    public function __construct(CityServiceInterface $cityService){
+        $this->cityService = $cityService;
+    }
 
-        $json_file = file_get_contents('http://api.openweathermap.org/data/2.5/forecast?q='.$city.',br&units=metric&mode=json&appid=56c03479866487fa794a1047fbb8a684&lang=pt');
+    public function getByCity(string $wantedCity){
 
-        $json_str = json_decode($json_file, true);
+        try{
+            $city = $this->cityService->get($wantedCity);
 
-        if($json_str['cod'] == 200){
-            return $json_str['city.name'];
+            if(isset($city)){
+                return response()->json($city, Response::HTTP_OK);
+            }else{
+                $json_file = file_get_contents('http://api.openweathermap.org/data/2.5/forecast?q='.$wantedCity
+                    .',br&units=metric&mode=json&appid=56c03479866487fa794a1047fbb8a684&lang=pt');
+            }
+
+            $jsonObj = json_decode($json_file, true);
+
+            return response()->json($this->cityService->store($jsonObj), Response::HTTP_OK);
+
+        }catch (\Exception $e){
+            return response()->json(['error' => 'Cidade não encontrada'], Response::HTTP_NOT_FOUND);
         }
-
     }
 //
-    public function teste($id){
-        return $id;
+    public function getAll(){
+        try{
+            return response()->json($this->cityService->getAll(), Response::HTTP_OK);
+        }catch (Exception $e){
+            return response()->json(['error' => 'Cidade não encontrada'], Response::HTTP_NOT_FOUND);
+        }
+    }
+
+    public function destroy($id){
+        try{
+            return response()->json($this->cityService->destroy($id), Response::HTTP_OK);
+        }catch (Exception $e){
+            return response()->json(['error' => 'Cidade não encontrada'], Response::HTTP_NOT_FOUND);
+        }
     }
 }
