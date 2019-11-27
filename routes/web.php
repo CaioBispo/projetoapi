@@ -18,5 +18,5 @@ $router->group(['prefix' => '/api'], function() use ($router){
 });
 
 $router->get('/', function () use ($router) {
-   return phpinfo();
+   return 'teste';
 });
