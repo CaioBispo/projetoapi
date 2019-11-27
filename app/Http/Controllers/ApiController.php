@@ -36,7 +36,7 @@ class ApiController extends BaseController
 
             $jsonObj = json_decode($json_file, true);
 
-            return response()->json($this->cityService->store($jsonObj), Response::HTTP_OK);
+            return response()->json(json_decode($this->cityService->store($jsonObj), true), Response::HTTP_OK);
 
         }catch (\Exception $e){
             return response()->json(['error' => 'Cidade não encontrada'], Response::HTTP_NOT_FOUND);
@@ -53,7 +53,8 @@ class ApiController extends BaseController
 
     public function destroy($id){
         try{
-            return response()->json($this->cityService->destroy($id), Response::HTTP_OK);
+            response()->json($this->cityService->destroy($id), Response::HTTP_OK);
+            return response()->json(['Sucesso' => 'Registro Deletado'], Response::HTTP_OK);
         }catch (Exception $e){
             return response()->json(['error' => 'Cidade não encontrada'], Response::HTTP_NOT_FOUND);
         }
